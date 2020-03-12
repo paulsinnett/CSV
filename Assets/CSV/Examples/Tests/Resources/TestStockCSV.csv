@@ -1,0 +1,6 @@
+name,price,image,colour,available,category,material,sound
+cookie,50,Cookie,FF0000FF,True,Baked,Special,Funny
+apple,30,Apple,00FF1FFF,False,Fruit,Ordinary,Clack
+chicken leg,200,ChickenLeg,FF0000FF,True,Meat,Ordinary,Clack
+fish,500,Fish,0076FFFF,True,Meat,Ordinary,Clack
+steak,1000,Steak,FF0000FF,True,Meat,Ordinary,Clack

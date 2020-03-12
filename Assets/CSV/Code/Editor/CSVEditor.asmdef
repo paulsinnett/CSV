@@ -1,7 +1,11 @@
 {
-    "name": "CSV",
-    "references": [],
-    "includePlatforms": [],
+    "name": "CSVEditor",
+    "references": [
+        "GUID:730f0c37d04d20149a37dda0e964a611"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": false,

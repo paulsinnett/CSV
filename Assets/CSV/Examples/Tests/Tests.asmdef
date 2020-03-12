@@ -3,7 +3,9 @@
     "references": [
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner",
-        "CSV"
+        "CSV",
+        "CSVEditor",
+        "Examples"
     ],
     "includePlatforms": [
         "Editor"

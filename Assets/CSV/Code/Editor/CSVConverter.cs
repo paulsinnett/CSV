@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEditor;
 using UnityEngine;
 
@@ -35,20 +36,13 @@ public static class CSVConverter
                     values.Add(property.boolValue.ToString());
                     break;
                 case SerializedPropertyType.ObjectReference:
-                    var objRef = property.objectReferenceValue;
-                    var path = AssetDatabase.GetAssetPath(objRef);
-                    var guid = AssetDatabase.AssetPathToGUID(path);
-                    if (objRef.GetType() == typeof(Sprite))
+                    if (property.objectReferenceValue != null)
                     {
-                        values.Add(
-                            string.Format(
-                                "{0}.{1}",
-                                guid,
-                                objRef.name));
+                        values.Add(property.objectReferenceValue.name);
                     }
                     else
                     {
-                        values.Add(objRef.name);
+                        values.Add("");
                     }
                     break;
                 case SerializedPropertyType.Color:
@@ -82,7 +76,46 @@ public static class CSVConverter
         return csv;
     }
 
-    static void SetProperty(SerializedProperty element, string name, string value)
+    static Object FindObjectFromPath(
+        string path, 
+        System.Type type,
+        string name)
+    {
+        var objects = AssetDatabase.LoadAllAssetsAtPath(path);
+        foreach (var asset in objects)
+        {
+            if (asset.GetType() == type && asset.name == name)
+            {
+                return asset;
+            }
+        }
+        return null;
+    }
+
+    static Object FindObject(
+        System.Reflection.FieldInfo type,
+        string name)
+    {
+        string typeName = type.ToString();
+        typeName = typeName.Replace("UnityEngine.", "");
+        string [] guids = AssetDatabase.FindAssets(name);
+        foreach (var guid in guids)
+        {
+            string path = AssetDatabase.GUIDToAssetPath(guid);
+            return FindObjectFromPath(path, type.FieldType, name);
+        }
+        Debug.LogErrorFormat(
+            "{0} {1} not found",
+            type,
+            name);
+        return null;
+    }
+
+    static void SetProperty(
+        System.Type type,
+        SerializedProperty element,
+        string name,
+        string value)
     {
         var property = element.FindPropertyRelative(name);
         Debug.AssertFormat(
@@ -134,10 +167,24 @@ public static class CSVConverter
                 }
                 break;
             case SerializedPropertyType.ObjectReference:
+                var fieldType = type.GetField(property.name);
+                property.objectReferenceValue = FindObject(fieldType, value);
                 break;
             case SerializedPropertyType.Color:
+                Color color = Color.white;
+                value = string.Format("#{0}", value);
+                if (ColorUtility.TryParseHtmlString(value, out color))
+                {
+                    property.colorValue = color;
+                }
                 break;
             case SerializedPropertyType.Enum:
+                var enumNames = new List<string>(property.enumNames);
+                Debug.AssertFormat(
+                    enumNames.Contains(value),
+                    "enum value {0} not found",
+                    value);
+                property.enumValueIndex = enumNames.IndexOf(value);
                 break;
             default:
                 Debug.LogFormat(
@@ -147,7 +194,7 @@ public static class CSVConverter
         }
     }
 
-    public static void FromCSV(List<string> csv, SerializedProperty list)
+    public static void FromCSV(List<string> csv, System.Type type, SerializedProperty list)
     {
         Debug.Assert(csv.Count > 0, "csv is empty");
         List<string> properties = CSV.SplitCSVLine(csv[0]);
@@ -159,8 +206,72 @@ public static class CSVConverter
             var element = list.GetArrayElementAtIndex(i - 1);
             for (int j = 0; j < properties.Count; ++j)
             {
-                SetProperty(element, properties[j], values[j]);
+                SetProperty(type, element, properties[j], values[j]);
             }
+        }
+    }
+
+    public static void ExportCSVFile(
+        string filename,
+        SerializedProperty list)
+    {
+        List<string> csv = ToCSV(list);
+        using (StreamWriter file = File.CreateText(filename))
+        {
+            foreach (string line in csv)
+            {
+                file.WriteLine(line);
+            }
+        }
+        AssetDatabase.Refresh();
+    }
+
+    public static void ExportCSV(
+        string defaultName,
+        SerializedProperty list)
+    {
+        string filename = EditorUtility.SaveFilePanelInProject(
+            "Export CSV",
+            defaultName,
+            "csv",
+            "enter a file name to export the data to");
+        if (!string.IsNullOrEmpty(filename))
+        {
+            ExportCSVFile(filename, list);
+        }
+    }
+
+    public static void ImportCSVFile<Type>(
+        string filename,
+        SerializedProperty list)
+    {
+        var csv = new List<string>();
+        using (var reader = new StreamReader(filename))
+        {
+            string line;
+            do
+            {
+                line = reader.ReadLine();
+                if (line != null)
+                {
+                    csv.Add(line);
+                }
+            }
+            while (line != null);
+        }
+        CSVConverter.FromCSV(csv, typeof(Type), list);
+        list.serializedObject.ApplyModifiedProperties();
+    }
+
+    public static void ImportCSV<Type>(string defaultFolder, SerializedProperty list)
+    {
+        string filename = EditorUtility.OpenFilePanelWithFilters(
+            "Import CSV",
+            defaultFolder,
+            new string [] { "CSV files", "csv", "All files", "*" });
+        if (!string.IsNullOrEmpty(filename))
+        {
+            ImportCSVFile<Type>(filename, list);
         }
     }
 }

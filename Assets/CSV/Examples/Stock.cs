@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
@@ -8,15 +7,21 @@ public class Stock : ScriptableObject
 {
     public List<ShopItem> stock;
 
-    [ContextMenu("Export To CSV")]
+#if UNITY_EDITOR
+    [ContextMenu("Export to CSV")]
     public void ExportToCSV()
     {
         var serializedObject = new SerializedObject(this);
-        var csv = CSVConverter.ToCSV(serializedObject.FindProperty("stock"));
-
-        foreach (var line in csv)
-        {
-            Debug.Log(line);
-        }
+        var list = serializedObject.FindProperty("stock");
+        CSVConverter.ExportCSV("stock", list);
     }
+
+    [ContextMenu("Import from CSV")]
+    public void ImportFromCSV()
+    {
+        var serializedObject = new SerializedObject(this);
+        var list = serializedObject.FindProperty("stock");
+        CSVConverter.ImportCSV<ShopItem>("stock", list);
+    }
+#endif
 }

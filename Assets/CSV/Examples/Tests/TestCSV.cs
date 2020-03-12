@@ -19,10 +19,10 @@ namespace Tests
         {
             line = "abc,def,ghi";
             entries = CSV.SplitCSVLine(line);
-            Assert.AreEqual(entries.Count, 3);
-            Assert.AreEqual(entries[0], "abc");
-            Assert.AreEqual(entries[1], "def");
-            Assert.AreEqual(entries[2], "ghi");
+            Assert.AreEqual(3, entries.Count);
+            Assert.AreEqual("abc", entries[0]);
+            Assert.AreEqual("def", entries[1]);
+            Assert.AreEqual("ghi", entries[2]);
         }
 
         [Test]
@@ -30,10 +30,10 @@ namespace Tests
         {
             line = "abc,\"def,ghi\",jkl";
             entries = CSV.SplitCSVLine(line);
-            Assert.AreEqual(entries.Count, 3);
-            Assert.AreEqual(entries[0], "abc");
-            Assert.AreEqual(entries[1], "def,ghi");
-            Assert.AreEqual(entries[2], "jkl");
+            Assert.AreEqual(3, entries.Count);
+            Assert.AreEqual("abc", entries[0]);
+            Assert.AreEqual("def,ghi", entries[1]);
+            Assert.AreEqual("jkl", entries[2]);
         }
 
         [Test]
@@ -41,10 +41,10 @@ namespace Tests
         {
             line = "abc,\"\"\"def,ghi\"\"\",jkl";
             entries = CSV.SplitCSVLine(line);
-            Assert.AreEqual(entries.Count, 3);
-            Assert.AreEqual(entries[0], "abc");
-            Assert.AreEqual(entries[1], "\"def,ghi\"");
-            Assert.AreEqual(entries[2], "jkl");
+            Assert.AreEqual(3, entries.Count);
+            Assert.AreEqual("abc", entries[0]);
+            Assert.AreEqual("\"def,ghi\"", entries[1]);
+            Assert.AreEqual("jkl", entries[2]);
         }
 
         [Test]
@@ -53,10 +53,10 @@ namespace Tests
             line = @"abc,def
 ghi,jkl";
             entries = CSV.SplitCSVLine(line);
-            Assert.AreEqual(entries.Count, 3);
-            Assert.AreEqual(entries[0], "abc");
-            Assert.AreEqual(entries[1], "def\nghi");
-            Assert.AreEqual(entries[2], "jkl");
+            Assert.AreEqual(3, entries.Count);
+            Assert.AreEqual("abc", entries[0]);
+            Assert.AreEqual("def\nghi", entries[1]);
+            Assert.AreEqual("jkl", entries[2]);
         }
 
         [Test]
@@ -65,7 +65,7 @@ ghi,jkl";
             StringBuilder builder = new StringBuilder("line1");
             builder.AppendLine();
             builder.Append("line2");
-            Assert.AreEqual(builder.ToString().Count('\n'), 1);
+            Assert.AreEqual(1, builder.ToString().Count('\n'));
         }
 
         [Test]
@@ -74,10 +74,10 @@ ghi,jkl";
             StringReader reader = new StringReader("abc,\"def\nghi\",jkl");
             line = CSV.GetCSVLine(reader);
             entries = CSV.SplitCSVLine(line);
-            Assert.AreEqual(entries.Count, 3);
-            Assert.AreEqual(entries[0], "abc");
-            Assert.AreEqual(entries[1], "def\nghi");
-            Assert.AreEqual(entries[2], "jkl");
+            Assert.AreEqual(3, entries.Count);
+            Assert.AreEqual("abc", entries[0]);
+            Assert.AreEqual("def\nghi", entries[1]);
+            Assert.AreEqual("jkl", entries[2]);
         }
 
         [Test]
@@ -88,7 +88,7 @@ ghi,jkl";
             entries.Add("def\nghi");
             entries.Add("jkl");
             line = CSV.MakeCSVLine(entries);
-            Assert.AreEqual(line, "abc,\"def\nghi\",jkl");
+            Assert.AreEqual("abc,\"def\nghi\",jkl", line);
         }
     }
 }

@@ -1,6 +1,9 @@
 {
-    "name": "CSV",
-    "references": [],
+    "name": "Examples",
+    "references": [
+        "GUID:730f0c37d04d20149a37dda0e964a611",
+        "GUID:e78d70e44ede9d64cbcf4d98d3ba54dd"
+    ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,

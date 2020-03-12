@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 508246719fdad4740a54e2238a82ca58, type: 3}
-  m_Name: Stock
+  m_Name: TestExportStock
   m_EditorClassIdentifier: 
   stock:
   - name: cookie
@@ -21,19 +21,3 @@ MonoBehaviour:
     category: 1
     material: {fileID: 2100000, guid: 18e5b0f56e9744e41b97aa91ecd99afb, type: 2}
     sound: {fileID: 8300000, guid: 70e02441ad3cd8f488092b6a4933e446, type: 3}
-  - name: apple
-    price: 30
-    image: {fileID: 21300024, guid: 142ff8784e552734f9d6a895491d0ae8, type: 3}
-    colour: {r: 0, g: 1, b: 0.12092161, a: 0}
-    available: 1
-    category: 4
-    material: {fileID: 2100000, guid: 59c8044da5f3b444ca312c8880ac37f8, type: 2}
-    sound: {fileID: 8300000, guid: 5ed9970e17bfee943a6dff056dc3a9d0, type: 3}
-  - name: chicken leg
-    price: 200
-    image: {fileID: 21300100, guid: 142ff8784e552734f9d6a895491d0ae8, type: 3}
-    colour: {r: 1, g: 0, b: 0, a: 0}
-    available: 1
-    category: 3
-    material: {fileID: 2100000, guid: 59c8044da5f3b444ca312c8880ac37f8, type: 2}
-    sound: {fileID: 8300000, guid: 5ed9970e17bfee943a6dff056dc3a9d0, type: 3}
